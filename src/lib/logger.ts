@@ -1,4 +1,4 @@
-import winston from 'winston';
+import winston from "winston";
 
 // Define log levels and their colors
 const logLevels = {
@@ -10,11 +10,11 @@ const logLevels = {
     debug: 4,
   },
   colors: {
-    error: 'red',
-    warn: 'yellow',
-    info: 'green',
-    http: 'magenta',
-    debug: 'blue',
+    error: "red",
+    warn: "yellow",
+    info: "green",
+    http: "magenta",
+    debug: "blue",
   },
 };
 
@@ -24,33 +24,33 @@ winston.addColors(logLevels.colors);
 // Define log formats
 const consoleFormat = winston.format.combine(
   winston.format.colorize(),
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.printf(({ timestamp, level, message, ...meta }) => {
     const statusCode = meta.statusCode
       ? ` | statusCode: ${meta.statusCode}`
-      : '';
+      : "";
     return `${timestamp} ${level}: ${message}${statusCode}`;
-  }),
+  })
 );
 
 const fileFormat = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.printf(({ timestamp, level, message, ...meta }) => {
     const statusCode = meta.statusCode
       ? ` | statusCode: ${meta.statusCode}`
-      : '';
+      : "";
     const logData = JSON.stringify({
       body: meta.body,
       params: meta.params,
       query: meta.query,
     });
     return `${timestamp} ${level}: ${message}${statusCode} | log_data: ${logData}`;
-  }),
+  })
 );
 
 // Function to format the date with leading zeros (optional)
 function pad(number: number) {
-  return number.toString().padStart(2, '0');
+  return number.toString().padStart(2, "0");
 }
 
 // Extract year, month, and day with leading zeros
@@ -70,12 +70,12 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({
       format: consoleFormat,
-      level: 'http', // Ensure all levels from 'http' and above are logged
+      level: "http", // Ensure all levels from 'http' and above are logged
     }),
-    new winston.transports.File({
-      filename: `.log/${getFileName(new Date())}`,
-      format: fileFormat,
-      level: 'http', // Ensure all levels from 'http' and above are logged
-    }),
+    // new winston.transports.File({
+    //   filename: `.log/${getFileName(new Date())}`,
+    //   format: fileFormat,
+    //   level: 'http', // Ensure all levels from 'http' and above are logged
+    // }),
   ],
 });
